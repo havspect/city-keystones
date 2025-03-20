@@ -13,10 +13,7 @@ class BottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('City Keystones'),
-      ),
-      body: navigationShell,
+      body: SafeArea(child: navigationShell),
       bottomNavigationBar: NavigationBar(destinations: [
         NavigationDestination(
           icon: Icon(Icons.home),

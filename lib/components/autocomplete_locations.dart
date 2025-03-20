@@ -34,9 +34,10 @@ class AutocompleteLocations extends StatefulWidget {
 
 class _AutocompleteLocationsState extends State<AutocompleteLocations> {
   final TextEditingController _controller = TextEditingController();
-  List<LocationData> _searchResults = [];
-  Timer? _debounce;
   bool _isLoading = false;
+  List<LocationData> _options = [];
+  Timer? _debounce;
+  String _lastQuery = '';
 
   @override
   void initState() {
@@ -55,34 +56,36 @@ class _AutocompleteLocationsState extends State<AutocompleteLocations> {
 
   // Using Nominatim OpenStreetMap API to search for locations
   Future<void> _searchLocation(String query) async {
-    if (query.isEmpty) {
-      setState(() {
-        _searchResults = [];
-        _isLoading = false;
-      });
+    if (query.isEmpty || query == _lastQuery) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    _lastQuery = query;
+    
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      setState(() {
+        _isLoading = true;
+        _options = [];
+      });
 
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=5',
-        ),
-        headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'CityKeystones/1.0',
-        },
-      );
+      try {
+        final response = await http.get(
+          Uri.parse(
+            'https://nominatim.openstreetmap.org/search?q=$query&format=json&limit=5',
+          ),
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'CityKeystones/1.0',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        
-        setState(() {
-          _searchResults = data
+        if (response.statusCode == 200) {
+          final List<dynamic> data = json.decode(response.body);
+          
+          print(data); // Debug print
+          
+          final results = data
               .where((item) => 
                   item['lat'] != null && 
                   item['lon'] != null && 
@@ -93,110 +96,150 @@ class _AutocompleteLocationsState extends State<AutocompleteLocations> {
                     longitude: double.parse(item['lon']),
                   ))
               .toList();
-          _isLoading = false;
-        });
-      } else {
+              
+          // Only update if this is still the most recent query
+          if (query == _lastQuery) {
+            setState(() {
+              _options = results;
+              _isLoading = false;
+            });
+          }
+        }
+      } catch (e) {
+        debugPrint('Error searching for location: $e');
         setState(() {
-          _searchResults = [];
           _isLoading = false;
         });
       }
-    } catch (e) {
-      setState(() {
-        _searchResults = [];
-        _isLoading = false;
-      });
-      debugPrint('Error searching for location: $e');
-    }
-  }
-
-  void _onSearchChanged(String value) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 750), () {
-      _searchLocation(value);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              hintText: widget.hintText,
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: _isLoading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                  : _controller.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _controller.clear();
-                            setState(() {
-                              _searchResults = [];
-                            });
-                          },
+          child: RawAutocomplete<LocationData>(
+            initialValue: TextEditingValue(text: widget.initialValue ?? ''),
+            optionsBuilder: (TextEditingValue textEditingValue) {
+              _searchLocation(textEditingValue.text);
+              return _options;
+            },
+            displayStringForOption: (LocationData option) => option.displayName,
+            fieldViewBuilder: (
+              BuildContext context,
+              TextEditingController controller,
+              FocusNode focusNode,
+              VoidCallback onFieldSubmitted,
+            ) {
+              // Store the controller reference to update it later if needed
+              _controller.text = controller.text;
+              
+              return TextField(
+                controller: controller,
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  hintText: widget.hintText,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
                         )
-                      : null,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            onChanged: _onSearchChanged,
+                      : controller.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                controller.clear();
+                                setState(() {
+                                  _options = [];
+                                });
+                              },
+                            )
+                          : null,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                onChanged: (value) {
+                  // This ensures the dropdown shows when typing
+                  if (value.isNotEmpty) {
+                    focusNode.requestFocus();
+                  }
+                },
+              );
+            },
+            optionsViewBuilder: (
+              BuildContext context, 
+              AutocompleteOnSelected<LocationData> onSelected, 
+              Iterable<LocationData> options,
+            ) {
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  elevation: 4.0,
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 300),
+                    width: MediaQuery.of(context).size.width - 16, // Padding adjustment
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(8.0),
+                      boxShadow: [
+                        BoxShadow(
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: options.isEmpty && _isLoading
+                        ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : options.isEmpty
+                            ? const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                                  child: Text('No locations found'),
+                                ),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: options.length,
+                                itemBuilder: (context, index) {
+                                  final LocationData result = options.elementAt(index);
+                                  return ListTile(
+                                    title: Text(
+                                      result.displayName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    subtitle: Text(
+                                      'Lat: ${result.latitude.toStringAsFixed(4)}, Long: ${result.longitude.toStringAsFixed(4)}',
+                                    ),
+                                    onTap: () {
+                                      onSelected(result);
+                                    },
+                                  );
+                                },
+                              ),
+                  ),
+                ),
+              );
+            },
+            onSelected: (LocationData selection) {
+              widget.onLocationSelected(selection);
+            },
           ),
         ),
-        if (_searchResults.isNotEmpty)
-          Container(
-            constraints: const BoxConstraints(maxHeight: 300),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(8.0),
-                bottomRight: Radius.circular(8.0),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  spreadRadius: 1,
-                  blurRadius: 3,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _searchResults.length,
-              itemBuilder: (context, index) {
-                final result = _searchResults[index];
-                return ListTile(
-                  title: Text(
-                    result.displayName,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    'Lat: ${result.latitude.toStringAsFixed(4)}, Long: ${result.longitude.toStringAsFixed(4)}',
-                  ),
-                  onTap: () {
-                    _controller.text = result.displayName;
-                    widget.onLocationSelected(result);
-                    setState(() {
-                      _searchResults = [];
-                    });
-                  },
-                );
-              },
-            ),
-          ),
       ],
     );
   }
