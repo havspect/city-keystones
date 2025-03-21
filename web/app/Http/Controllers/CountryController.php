@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Collection;
+use App\Filament\Resources\CountryResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\CollectionResource;
+use App\Models\Country;
 
-class CollectionController extends Controller
+class CountryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return CollectionResource::collection(Collection::all());
+        return CountryResource::collection(Country::paginate());
     }
 
     /**
@@ -21,7 +21,8 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $country = Country::create($request->all());
+        return new CountryResource($country);
     }
 
     /**
@@ -29,7 +30,8 @@ class CollectionController extends Controller
      */
     public function show(string $id)
     {
-        return new CollectionResource(Collection::findOrFail($id));
+        $country = Country::findOrFail($id);
+        return new CountryResource($country);
     }
 
     /**
@@ -37,9 +39,9 @@ class CollectionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $collection = Collection::findOrFail($id);
-        $collection->update($request->all());
-        return new CollectionResource($collection);
+        $country = Country::findOrFail($id);
+        $country->update($request->all());
+        return new CountryResource($country);
     }
 
     /**
@@ -47,8 +49,8 @@ class CollectionController extends Controller
      */
     public function destroy(string $id)
     {
-        $collection = Collection::findOrFail($id);
-        $collection->delete();
+        $country = Country::findOrFail($id);
+        $country->delete();
         return response()->noContent();
     }
 }

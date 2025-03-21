@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\KeystoneController;
 use App\Models\Keystone;
 use Illuminate\Http\Request;
+use App\Http\Controllers\CityController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 
 Route::get('/user', function (Request $request) {
@@ -24,7 +27,7 @@ Route::get('/user', function (Request $request) {
 // });
 
 // Mobile login
-Route::post('/mobile/token', function (Request $request) {
+Route::post('/login', function (Request $request) {
 
     $request->validate([
         'email' => 'required|email',
@@ -39,8 +42,34 @@ Route::post('/mobile/token', function (Request $request) {
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
-    return $user->createToken($request->device_name)->plainTextToken;
+    return $user->createToken($request->token_name)->plainTextToken;
+});
+
+Route::post('/register', function (Request $request) {
+    $request->validate([
+        'email'=> 'required|email',
+        'password'=> 'required',
+        'name' => 'required',
+        'token_name' => 'required'
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if ($user) {
+        throw ValidationException::withMessages([
+            'email'=> ['The provided email already exists'],
+            ]);
+    }
+
+    $user = User::create([
+        'name'=> $request->name,
+        'email'=> $request->email,
+        'password'=> Hash::make($request->password),
+    ]);
+
+    return $user->createToken($request->token_name)->plainTextToken;
 });
 
 Route::apiResource('collections', controller: CollectionController::class)->middleware('auth:sanctum');
-Route::apiResource('keystones', controller: Keystone::class)->middleware('auth:sanctum');
+Route::apiResource('keystones', controller: KeystoneController::class)->middleware('auth:sanctum');
+Route::apiResource('cities', controller: CityController::class)->middleware('auth:sanctum');

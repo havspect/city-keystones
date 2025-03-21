@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Keystone;
+use App\Http\Resources\KeystoneResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class KeystoneController extends Controller
 {
@@ -13,9 +13,7 @@ class KeystoneController extends Controller
      */
     public function index()
     {
-        $keystones = DB::table('keystones')->get();
-
-        return $keystones;
+        return KeystoneResource::collection(Keystone::paginate());
     }
 
     /**
@@ -31,15 +29,7 @@ class KeystoneController extends Controller
      */
     public function show(string $id)
     {
-        $keystone = DB::table('keystones')->find($id);
-
-        if (! $keystone) {
-            throw ValidationException::withMessages(
-                ['id' => 'The id is not in the database']
-            );
-        }
-
-        return $keystone;
+        return new KeystoneResource(Keystone::findOrFail($id));
     }
 
     /**
@@ -47,7 +37,9 @@ class KeystoneController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $keystone = Keystone::findOrFail($id);
+        $keystone->update($request->all());
+        return new KeystoneResource($keystone);
     }
 
     /**
@@ -55,6 +47,8 @@ class KeystoneController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $keystone = Keystone::findOrFail($id);
+        $keystone->delete();
+        return response()->noContent();
     }
 }

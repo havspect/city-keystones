@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Collection;
+use App\Http\Resources\CityResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\CollectionResource;
+use App\Models\City;
 
-class CollectionController extends Controller
+class CityController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return CollectionResource::collection(Collection::all());
+        return CityResource::collection(City::paginate());
     }
 
     /**
@@ -29,7 +29,8 @@ class CollectionController extends Controller
      */
     public function show(string $id)
     {
-        return new CollectionResource(Collection::findOrFail($id));
+        $city = City::findOrFail($id);
+        return new CityResource($city);
     }
 
     /**
@@ -37,9 +38,7 @@ class CollectionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $collection = Collection::findOrFail($id);
-        $collection->update($request->all());
-        return new CollectionResource($collection);
+        //
     }
 
     /**
@@ -47,8 +46,6 @@ class CollectionController extends Controller
      */
     public function destroy(string $id)
     {
-        $collection = Collection::findOrFail($id);
-        $collection->delete();
-        return response()->noContent();
+        //
     }
 }
