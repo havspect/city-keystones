@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Collection extends Model
-{
+class Collection extends Model {
     //
     use HasFactory;
 
@@ -20,8 +19,8 @@ class Collection extends Model
         'hero_image_url'
     ];
 
-    public function keystones(): BelongsToMany
+    public function keystones(): HasMany
     {
-        return $this->belongsToMany(Keystone::class);
+        return $this->hasMany(Keystone::class);
     }
 }

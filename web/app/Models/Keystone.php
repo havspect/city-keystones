@@ -20,7 +20,9 @@ class Keystone extends Model
         "description",
         "latitude",
         "longitude",
-        "hero_image_url"
+        "hero_image_url",
+        "address",
+        "city_id",
     ];
 
     // protected function center(): Attribute 
@@ -35,18 +37,10 @@ class Keystone extends Model
         return $this->belongsToMany(Collection::class);
     }
 
-    // public function heroImageUrl(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: function (string $value) {
-    //             if (str_starts_with($value, 'http')) {
-    //                 return $value;
-    //             } else {
-    //                 return asset($value);
-    //             }
-    //         }
-    //     );
-    // }
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
 
     protected $dispatchesEvents = [
         'deleted' => KeystoneDeleted::class,

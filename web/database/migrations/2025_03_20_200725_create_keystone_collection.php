@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('collection_keystone', function (Blueprint $table) {
-            $table->unsignedBigInteger('collection_id');
-            $table->unsignedBigInteger('keystone_id');
+            $table->foreignId('collection_id')->constrained();
+            $table->foreignId('keystone_id')->constrained();
         });
     }
 
@@ -22,6 +22,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('collection_keystone', function (Blueprint $table) {
+            $table->dropForeign(['collection_id']);
+            $table->dropForeign(['keystone_id']);
+        });
+
         Schema::dropIfExists('collection_keystone');
     }
 };

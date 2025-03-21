@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('hero_image_url');
             $table->double('latitude');
             $table->double('longitude');
+            $table->string('address');
+            $table->foreignId('city_id')->constrained();
             $table->timestamps();
         });
     }
@@ -27,6 +29,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('keystones', function (Blueprint $table) {
+            $table->dropForeign(['city_id']);
+        });
         Schema::dropIfExists('keystones');
     }
 };
