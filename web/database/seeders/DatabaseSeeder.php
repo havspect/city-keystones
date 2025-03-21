@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Collection;
+use App\Models\Country;
+use App\Models\City;
 use App\Models\Keystone;
-use App\Models\User;
+use App\Models\KeystoneImage;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,13 +16,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        Collection::factory(10)->has(Keystone::factory(5))->create();
+        Country::factory()->count(5)
+            ->has(
+                City::factory()->count(5)
+                    ->has(
+                        Keystone::factory()->count(5)
+                            ->has(KeystoneImage::factory()->count(5))
+                    )
+            )
+            ->create();
     }
 }

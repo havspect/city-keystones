@@ -2,20 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KeystoneResource\Pages;
-use App\Filament\Resources\KeystoneResource\RelationManagers;
-use App\Models\Keystone;
-use Filament\Forms;
+use App\Filament\Resources\CityResource\Pages;
+use App\Filament\Resources\CityResource\RelationManagers;
+use App\Models\City;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KeystoneResource extends Resource
+class CityResource extends Resource
 {
-    protected static ?string $model = Keystone::class;
+    protected static ?string $model = City::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,22 +21,21 @@ class KeystoneResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required()->columnSpan(2),
-                Forms\Components\MarkdownEditor::make('description')->required()->columnSpan(2),
-                Forms\Components\FileUpload::make('hero_image_url')
-                    ->image()
-                    ->disk('public'),
+                //
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
+            ->columns([
+
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('hero_image_url'),
-                Tables\Columns\TextColumn::make('city.id'),
+                Tables\Columns\TextColumn::make('description'),
+                Tables\Columns\TextColumn::make('latitude'),
+                Tables\Columns\TextColumn::make('longitude'),
+                Tables\Columns\TextColumn::make('keystones')->formatStateUsing(fn ($record) => $record->keystones?->count() ?? 0)->label('Keystone Count')
             ])
             ->filters([
                 //
@@ -56,16 +53,16 @@ class KeystoneResource extends Resource
     public static function getRelations(): array
     {
         return [
-           //
+            RelationManagers\KeystonesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKeystones::route('/'),
-            'create' => Pages\CreateKeystone::route('/create'),
-            'edit' => Pages\EditKeystone::route('/{record}/edit'),
+            'index' => Pages\ListCities::route('/'),
+            'create' => Pages\CreateCity::route('/create'),
+            'edit' => Pages\EditCity::route('/{record}/edit'),
         ];
     }
 }

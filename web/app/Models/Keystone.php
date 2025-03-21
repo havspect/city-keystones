@@ -16,21 +16,27 @@ class Keystone extends Model
     protected $table = 'keystones';
 
     protected $fillable = [
-        "title",
+        "name",
         "description",
         "latitude",
         "longitude",
         "hero_image_url",
         "address",
-        "city_id",
+        "visit_duration_minutes",
     ];
 
-    // protected function center(): Attribute 
-    // {
-    //     return Attribute::make(
-    //         get: fn (mixed $value, array $attributes) => `$attributes['']`
-    //     )
-    // }
+    protected $casts = [
+        'latitude' => 'decimal:10',
+        'longitude' => 'decimal:10',
+    ];
+
+    protected function center(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => "{$attributes['latitude']},{$attributes['longitude']}"
+        );
+    }
+
 
     public function collections(): BelongsToMany
     {
@@ -40,6 +46,11 @@ class Keystone extends Model
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function keystoneImages()
+    {
+        return $this->hasMany(KeystoneImage::class);
     }
 
     protected $dispatchesEvents = [

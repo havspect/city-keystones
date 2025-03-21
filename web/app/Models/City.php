@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,8 +15,23 @@ class City extends Model
 
     protected $fillable = [
         'name',
-        'country_id',
+        'description',
+        'latitude',
+        'longitude',
+        'hero_image_url',
     ]; 
+
+    protected $casts = [
+        'latitude' => 'decimal:10',
+        'longitude' => 'decimal:10',
+    ];
+
+    protected function center(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => "{$attributes['latitude']},{$attributes['longitude']}"
+        );
+    }
 
     public function country()
     {

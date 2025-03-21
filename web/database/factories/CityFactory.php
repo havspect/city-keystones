@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,12 @@ class CityFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->city,
+            'description' => $this->faker->sentence,
+            'latitude' => $this->faker->latitude,
+            'longitude' => $this->faker->longitude,
+            'hero_image_url' => $this->faker->imageUrl(),
+            'country_id' => Country::factory(),
         ];
     }
 }

@@ -21,9 +21,11 @@ class CollectionFactory extends Factory
     public function definition(): array
     {
         return [
-            "title" => fake()->text((20)),
+            "name" => fake()->text((20)),
             "description" => fake()->text(),
             "hero_image_url" => fake()->imageUrl(640),
+            "duration_minutes" => fake()->numberBetween(30, 180),
+            "is_featured" => fake()->boolean(),
         ];
     }
 }
