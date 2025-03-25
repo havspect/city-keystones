@@ -37,15 +37,6 @@ class HomePage extends ConsumerWidget {
                         alignment: Alignment.centerRight,
                         children: [
                             SearchCities(),
-                          // if (filteredCities.length != cities.length)
-                          //   IconButton(
-                          //     icon: Icon(Icons.clear),
-                          //     onPressed: () {
-                          //       searchController.clear();
-                          //       ref.read(filteredCitiesProvider(cities).notifier).clear();
-                          //     },
-                          //     tooltip: 'Clear Search',
-                          //   ),
                         ],
                       ),
                     ),

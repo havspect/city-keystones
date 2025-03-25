@@ -1,13 +1,12 @@
 import 'package:city_keystones/state/api.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginPage extends ConsumerWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apiState = ref.read(apiProvider);
-
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
@@ -43,6 +42,7 @@ class LoginPage extends ConsumerWidget {
                       .read(apiProvider.notifier)
                       .login(emailController.text, passwordController.text);
                 } catch (e) {
+                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Login failed: ${e.toString()}')),
                   );
