@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class TapCard extends StatelessWidget {
   final Keystone keystone;
-  final Function(String id) onMoreInformation;
+  final Function(int id) onMoreInformation;
 
   const TapCard({
     super.key,
@@ -28,12 +28,12 @@ class TapCard extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                keystone.title,
+                keystone.name,
                 textAlign: TextAlign.left,
                 style: const TextStyle(fontSize: 18),
               ),
               Text(
-                keystone.description,
+                keystone.description ?? '',
                 textAlign: TextAlign.left,
                 style: const TextStyle(fontSize: 14),
               ),

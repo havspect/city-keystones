@@ -23,10 +23,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			vyqQJPNvJ2RoDWFjd7nXA0WtYG8=
+			U1nsxQdWAWHs0BfK0hAXecNc5pA=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"bf2a9024f36f2764680d616377b9d70345ad606f"</string>
+			<string>cdhash H"5359ecc507560161ecd017cad2101779c35ce690"</string>
 		</dict>
 		<key>Frameworks/FlutterMacOS.framework</key>
 		<dict>
@@ -41,10 +41,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			oJgcXDktli0LUu0HMQ/emzibHkk=
+			xepNwQoHHJbZypa8t5/sF3GsSHc=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"a0981c5c392d962d0b52ed07310fde9b389b1e49"</string>
+			<string>cdhash H"c5ea4dc10a071c96d9ca96bcb79fec1771ac4877"</string>
 		</dict>
 		<key>Frameworks/libswiftAppKit.dylib</key>
 		<dict>
@@ -212,19 +212,28 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			pkgwr8eKpjsdCcnYAEPhowGEYuE=
+			echGPD9YYUxD8nAiABofn98vmZU=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"a64830afc78aa63b1d09c9d80043e1a3018462e1"</string>
+			<string>cdhash H"79c8463c3f58614c43f27022001a1f9fdf2f9995"</string>
+		</dict>
+		<key>Frameworks/shared_preferences_foundation.framework</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			YzmX74LgHgjYC2ALmr8Qcrp7JYc=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"633997ef82e01e08d80b600b9abf1072ba7b2587"</string>
 		</dict>
 		<key>Frameworks/url_launcher_macos.framework</key>
 		<dict>
 			<key>cdhash</key>
 			<data>
-			OoOHTFsgpbsAZ0dE37/YU0hV0NA=
+			6pohRuvITXJyaJvb85xuVr2BunE=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"3a83874c5b20a5bb00674744dfbfd8534855d0d0"</string>
+			<string>cdhash H"ea9a2146ebc84d7272689bdbf39c6e56bd81ba71"</string>
 		</dict>
 		<key>MacOS/__preview.dylib</key>
 		<dict>
@@ -239,10 +248,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			t374Lo1DZ56BsMT43GcbGJ8bZk4=
+			uPBuLj7Qzq+WOxdAuiOSSRhlAqo=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"b77ef82e8d43679e81b0c4f8dc671b189f1b664e"</string>
+			<string>cdhash H"b8f06e2e3ed0ceaf963b1740ba239249186502aa"</string>
 		</dict>
 		<key>Resources/AppIcon.icns</key>
 		<dict>

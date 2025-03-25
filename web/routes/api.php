@@ -5,15 +5,14 @@ use App\Http\Controllers\KeystoneController;
 use App\Models\Keystone;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::get('/user', UserController::class)->middleware('auth:sanctum');
 
 
 // Route::post('/tokens/create', function (Request $request) {

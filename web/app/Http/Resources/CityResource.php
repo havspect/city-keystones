@@ -17,6 +17,7 @@ class CityResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
+            "hero_image_url" => $this->hero_image_url,
             "country" => CountryResource::make($this->country),
             "keystones" => KeystoneResource::collection($this->keystones),
         ];

@@ -14,14 +14,14 @@ class TapMarker extends Marker {
     required super.child,
   });
 
-  final String markerId;
-  final Function(String markerId) onTap;
+  final int markerId;
+  final Function(int markerId) onTap;
 }
 
 Marker buildTapMarker({
   required LatLng point,
-  required String markerId,
-  required Function(String markerId) onTap,
+  required int markerId,
+  required Function(int markerId) onTap,
   required Widget icon,
 }) {
   return TapMarker(

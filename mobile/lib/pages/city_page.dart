@@ -1,54 +1,34 @@
-import 'package:city_keystones/models/cities.dart';
+import 'package:city_keystones/state/cities.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../api/fetch_cities.dart'; // Import the API class
+// Import the API class
 
-class CityPage extends StatefulWidget {
+class CityPage extends ConsumerWidget {
   final String cityId;
 
   const CityPage({super.key, required this.cityId});
 
   @override
-  State<CityPage> createState() => _CityPageState();
-}
-
-class _CityPageState extends State<CityPage> {
-  late Future<City> _cityFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _cityFuture = CitiesApi().fetchCityById(
-      widget.cityId,
-    ); // Fetch city details
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cityFuture = ref.watch(fetchCityByIdProvider(cityId));
     return Scaffold(
       appBar: AppBar(title: const Text('City Keystone')),
-      body: FutureBuilder<City>(
-        future: _cityFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text('City not found.'));
-          }
-
-          final city = snapshot.data!;
+      body: cityFuture.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+        data: (city) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Hero(
                 tag: city.id,
-                child: Image.network(
-                  city.imageUrl,
-                  height: 250,
-                  fit: BoxFit.cover,
-                ),
+                // child: 
+                child: Container(
+                  height: 200,
+                  width: double.infinity,
+                  color: Colors.grey,
+                )
               ),
               const SizedBox(height: 16),
               Padding(
@@ -57,19 +37,23 @@ class _CityPageState extends State<CityPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          city.name,
-                          style: Theme.of(context).textTheme.headlineLarge,
+                        Flexible(
+                          child: Text(
+                            city.name,
+                            style: Theme.of(context).textTheme.headlineLarge,
+                            softWrap: true,
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                        const Spacer(),
                         FilledButton.icon(
                           onPressed: () => context.goNamed(
                           'map',
-                          queryParameters: {
-                            'lat': city.center.latitude.toString(),
-                            'lng': city.center.longitude.toString(),
-                          },
+                          // queryParameters: {
+                          //   'lat': city.center.latitude.toString(),
+                          //   'lng': city.center.longitude.toString(),
+                          // },
                           ),
                           icon: const Icon(Icons.arrow_forward),
                           iconAlignment: IconAlignment.end,
@@ -78,7 +62,7 @@ class _CityPageState extends State<CityPage> {
                       ],
                     ),
                     Text(
-                      city.country,
+                      city.country.name,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ],

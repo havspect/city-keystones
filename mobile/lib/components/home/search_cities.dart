@@ -1,30 +1,38 @@
+import 'package:city_keystones/state/cities.dart';
 import 'package:flutter/material.dart';
 import 'package:city_keystones/models/cities.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchCities extends StatelessWidget {
-  final List<City> cities;
-  final void Function(City) onCitySelected;
+final isSelectedProvider = StateProvider<String>((ref) => '');
 
+class SearchCities extends ConsumerWidget {
   const SearchCities({
-    Key? key,
-    required this.cities,
-    required this.onCitySelected,
-  }) : super(key: key);
+    super.key
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cities = ref.watch(citiesListProvider);
+    final isSelected = ref.watch(isSelectedProvider);
+
     return Autocomplete<City>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text.isEmpty) {
-          return const Iterable<City>.empty();
+      optionsBuilder: (TextEditingValue textEditingValue) async {
+        final String searchQuery = textEditingValue.text;
+
+        if (isSelected != searchQuery) {
+          ref.read(citiesListProvider.notifier).search(searchQuery);
         }
-        return cities.where((city) => city.name
-            .toLowerCase()
-            .contains(textEditingValue.text.toLowerCase()));
+
+        return cities.when(
+          loading: () => const Iterable<City>.empty(),
+          error: (error, stack) => const Iterable<City>.empty(),
+          data: (cities) => cities,
+        );
       },
       displayStringForOption: (City city) => city.name,
       onSelected: (City city) {
-        onCitySelected(city);
+        ref.read(citiesListProvider.notifier).select(city);
+        ref.read(isSelectedProvider.notifier).state = city.name;
       },
       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
         return TextField(

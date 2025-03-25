@@ -11,9 +11,16 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return CityResource::collection(City::paginate());
+        if($request->has('search_query')){
+            $cities = City::search($request->search_query)->paginate();
+        } else if($request->has('country_id')){
+            $cities = City::where('country_id', $request->country_id)->paginate();
+        } else {
+            $cities = City::paginate();
+        }
+        return CityResource::collection($cities);
     }
 
     /**

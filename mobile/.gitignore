@@ -1,0 +1,77 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# iOS related
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/engine/
+ios/Flutter/Generated.xcconfig
+ios/.symlinks/
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+ios/Flutter/App.framework.dSYM
+
+# Android related
+**/android/**/local.properties
+**/android/**/build/
+
+# Web related
+web/.dart_tool/
+web/.packages
+web/build/
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+*.iml
+
+# macOS
+macos/Flutter/ephemeral/
+macos/Flutter/Flutter.framework
+macos/Flutter/App.framework
+macos/Flutter/engine/
+macos/Flutter/Generated.xcconfig
+macos/.symlinks/
+macos/Pods/
+macos/Runner.xcworkspace/
+macos/Runner.xcodeproj/project.xcworkspace/
+macos/Runner.xcodeproj/xcuserdata/
+macos/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+macos/Flutter/App.framework.dSYM
+
+# Linux
+linux/flutter/ephemeral/
+
+# Windows
+windows/flutter/ephemeral/
+
+# Other
+*.log
+*.tmp
+*.swp
+*.lock
+*.DS_Store
+*.pdb
+*.dll
+*.dylib
+*.so
+*.bak
+*.orig
+*.rej
+*.sublime-workspace
+*.sublime-project

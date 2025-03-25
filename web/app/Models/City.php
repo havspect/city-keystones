@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class City extends Model
 {
     /** @use HasFactory<\Database\Factories\CityFactory> */
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $table = 'cities';
 

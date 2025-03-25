@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class BottomNavigationBar extends StatelessWidget {
-  const BottomNavigationBar({
+class BottomNavigationShell extends StatelessWidget {
+  const BottomNavigationShell({
     required this.navigationShell,
     Key? key,
   }) : super(key: key ?? const ValueKey<String>('BottomNavigationBar'));

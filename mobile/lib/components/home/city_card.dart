@@ -28,18 +28,19 @@ class CityCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0),
           child: Stack(
             children: [
-              Image.network(
-                imageUrl,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              // Image.network(
+              //   imageUrl,
+              //   height: 200,
+              //   width: double.infinity,
+              //   fit: BoxFit.cover,
+              // ),
               Container(
                 height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
+                      Colors.black.withOpacity(0.6),
                       Colors.transparent,
                     ],
                     begin: Alignment.bottomCenter,
@@ -47,15 +48,20 @@ class CityCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 10,
-                left: 10,
-                child: Text(
-                  cityName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      cityName,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
